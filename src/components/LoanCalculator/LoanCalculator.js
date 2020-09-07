@@ -26,7 +26,7 @@ const LoanCalculator = () => {
   useEffect(() => {
     setTimeout(() => {
       getLoanConfig();
-    }, 2000);
+    }, 1500);
   }, []);
 
   useEffect(() => {
@@ -75,11 +75,11 @@ const LoanCalculator = () => {
 
   const handleAmountVal = useCallback((val) => {
     setAmountVal(val);
-  }, [amountVal]);
+  }, []);
 
   const handleTermVal = useCallback((val) => {
     setTermVal(val);
-  }, [termVal]);
+  }, []);
 
   if (isLoading) {
     return (
