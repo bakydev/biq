@@ -24,9 +24,7 @@ const LoanCalculator = () => {
   const [termVal, setTermVal] = useState(0);
 
   useEffect(() => {
-    setTimeout(() => {
-      getLoanConfig();
-    }, 1500);
+    getLoanConfig();
   }, []);
 
   useEffect(() => {
@@ -64,13 +62,19 @@ const LoanCalculator = () => {
     setIsLoading(false);
   };
 
-  const getData = async (amountVal, termVal) => {
+  const getData = async (amountVal = '', termVal = '') => {
+    if (amountVal === '' && termVal === '') return;
+
     const res = await fetch(`${FIRST_LOAN_OFFER}?${LOAN_PARAMS.AMOUNT}=${amountVal}&${LOAN_PARAMS.TERM}=${termVal}`);
     const json = await res.json();
 
-    setLoanData(() => {
-      return json;
-    });
+    if (json.error) {
+      alert(json.error)
+    } else {
+      setLoanData(() => {
+        return json;
+      });
+    }
   };
 
   const handleAmountVal = useCallback((val) => {
@@ -95,6 +99,7 @@ const LoanCalculator = () => {
         <Flex>
           <Label>Amount</Label>
           <Select
+            type={"number"}
             value={amountVal}
             onChange={e => handleAmountVal(e.target.value)}
           />
@@ -113,6 +118,7 @@ const LoanCalculator = () => {
         <Flex>
           <Label>Number of Loan</Label>
           <Select
+            type={"number"}
             value={termVal}
             onChange={e => handleTermVal(e.target.value)}
           />
@@ -130,12 +136,15 @@ const LoanCalculator = () => {
         </Flex>
         <Line/>
         <List>
-          {loanData ? Object.keys(loanData).map((obj, idx) => (
-            <Item key={idx}>
-              <Title>{obj}</Title>
-              <Amount>{loanData[obj]}</Amount>
-            </Item>
-          )) : <div>Loan data are empty</div>}
+          {loanData ? Object.keys(loanData).map((obj, idx) => {
+            console.log(idx, loanData)
+            return (
+              <Item key={idx}>
+                <Title>{obj}</Title>
+                <Amount>{loanData[obj] && loanData[obj]}</Amount>
+              </Item>
+            )
+          }) : <div>Loan data are empty</div>}
         </List>
       </Wrap>
     </Container>
